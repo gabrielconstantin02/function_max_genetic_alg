@@ -1,9 +1,17 @@
 import math
 import random
+from decimal import Decimal
 
 
 def f(x, a, b, c):
     return a*(x**2)+b*x+c
+
+
+def build_x(chromosome, length, a, b):
+    x = 0
+    for i in range(length-1, -1, -1):
+        x += ((2**i)*chromosome[length-i-1])
+    return float((b-a)*x/((2**length)-1)+a)
 
 
 inp = open("date.txt", "r")
@@ -36,11 +44,20 @@ inp.close()
 # lungime cromozom
 l = math.ceil(math.log((e-d)*(10**precision), 2))
 print(l)
+
+#ca sa obtin acelasi random -- doar pentru testare
+random.seed(123)
+
 # matrice cu cromozomi generati
 m = [[random.randint(0, 1) for i in range(l)] for j in range(pop_dimension)]
 print(m)
 
-# x
+# test x and f
+temp = [0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,1,1,1,0,0,0,1]
+x=build_x(temp,l,d,e)
+print(build_x(temp,l,d,e))
+print(f(x,a,b,c))
+# end of test
 
 
 g = open("evolutie.txt", "w")
