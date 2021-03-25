@@ -60,19 +60,43 @@ print(f(x,a,b,c))
 # end of test
 
 
+# Afisare populatie initiala
+x = [0.0 for i in range(pop_dimension)]
+fn = [0.0 for i in range(pop_dimension)]
 g = open("evolutie.txt", "w")
 g.write("Populatia initiala\n")
 for i in range(pop_dimension):
     g.write(str(i+1)+": ")
     for j in m[i]:
         g.write(str(m[i][j]))
-    x = build_x(m[i], l, d, e)
-    fn = f(x, a, b, c)
-    g.write(" x= " + str(x) + " f= " + str(fn) + "\n")
+    x[i] = build_x(m[i], l, d, e)
+    fn[i] = f(x[i], a, b, c)
+    g.write(" x= " + str(x[i]) + " f= " + str(fn[i]) + "\n")
 
-#f.write("id,label\n")
-#i = 0
-#for img in list:
-#    f.write(img+","+str(predictions[i])+"\n")
-#    i += 1
+
+# probabilitati selectie pentru fiecare cromozom
+p = [fn[i]/sum(fn) for i in range(pop_dimension)]
+# afisare prob selectie
+g.write("\nProbabilitati selectie\n")
+for i in range(pop_dimension):
+    g.write("cromozom " + str(i+1) + " probabilitate " + str(p[i]) + "\n")
+# print(p)
+
+# intervale de selectie
+q = [0.0 for i in range(pop_dimension)]
+q[0] = p[0]
+for i in range(1,pop_dimension):
+    q[i] = q[i-1]+p[i]
+
+# afisare intervale probabilitati selectie
+g.write("\nIntervale probabilitati selectie\n")
+for i in range(pop_dimension):
+    g.write(str(q[i]) + " ")
+
+# daca probabilitatea de selectie p[i] e 0 atunci si q[i] trebuie sa fie 0
+# defapt cred ca nici nu ne trebuie asta ca oricum face >= si < decat acelasi lucru si crapa
+# for i in range(pop_dimension):
+#    if p[i] == 0:
+#        q[i] = 0
+# print(q)
 g.close()
