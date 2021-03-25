@@ -61,6 +61,15 @@ print(f(x,a,b,c))
 
 
 g = open("evolutie.txt", "w")
+g.write("Populatia initiala\n")
+for i in range(pop_dimension):
+    g.write(str(i+1)+": ")
+    for j in m[i]:
+        g.write(str(m[i][j]))
+    x = build_x(m[i], l, d, e)
+    fn = f(x, a, b, c)
+    g.write(" x= " + str(x) + " f= " + str(fn) + "\n")
+
 #f.write("id,label\n")
 #i = 0
 #for img in list:
