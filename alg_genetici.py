@@ -41,6 +41,79 @@ def binary_search(interval, low, high, x):
         return binary_search(interval, mid + 1, high, x)
 
 
+def crossover(chr, ind):
+    i = 0
+    # facem perechi pana ne raman 2 sau 3 cromozomi
+    while i + 3 < len(chr):
+        break_point = random.randint(0, l - 1)
+        g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
+        for j in chr[i]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+1]:
+            g.write(str(j))
+        g.write(" punct " + str(break_point) + "\n")
+        # print(chr[i], chr[i+1])
+        tmp = chr[i][:break_point]
+        chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
+        chr[i+1] = tmp + chr[i+1][break_point:]
+        g.write("Rezultat     ")
+        for j in chr[i]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+1]:
+            g.write(str(j))
+        # print(chr[i], chr[i+1])
+        i += 2
+    #print("\n")
+    break_point = random.randint(0, l - 1)
+    if i + 3 == len(chr):
+        # print(chr[i], chr[i+1], chr[i+2])
+        g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + " si cromozomul " + str(ind[i+2]+1) + ":\n")
+        for j in chr[i]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+1]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+2]:
+            g.write(str(j))
+        g.write(" punct " + str(break_point) + "\n")
+        tmp = chr[i][:break_point]
+        chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
+        chr[i+1] = chr[i+2][:break_point] + chr[i+1][break_point:]
+        chr[i+2] = tmp + chr[i+2][break_point:]
+        # print(chr[i], chr[i+1], chr[i+2])
+        g.write("Rezultat     ")
+        for j in chr[i]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+1]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+2]:
+            g.write(str(j))
+    else:
+        # print(chr[i], chr[i+1])
+        g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
+        for j in chr[i]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+1]:
+            g.write(str(j))
+        g.write(" punct " + str(break_point) + "\n")
+        tmp = chr[i][:break_point]
+        chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
+        chr[i+1] = tmp + chr[i+1][break_point:]
+        # print(chr[i], chr[i+1])
+        g.write("Rezultat     ")
+        for j in chr[i]:
+            g.write(str(j))
+        g.write(" ")
+        for j in chr[i+1]:
+            g.write(str(j))
+
+
 inp = open("date.txt", "r")
 # dimensiune populatie
 pop_dimension = int(inp.readline())
@@ -123,6 +196,7 @@ for i in range(pop_dimension):
     g.write(str(q[i]) + " ")
 
 # generare unui numar aleator u si determinarea intervalului caruia apartine
+# TODO: nu uita sa implementezi selectia elitista (alegi doar pop_dimension-1 aici)
 m_prim = []  # populatia p'
 for i in range(pop_dimension):
     u = random.uniform(0, 1)
@@ -138,12 +212,31 @@ display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 
 # participanti incrucisare
 g.write("\nProbabilitate de incrucisare " + str(pr) + "\n")
+mix = [] # lista de cromozomi care intra la incrucisare
+c_nr = [] # indicele "original" al cromozomilor
 for i in range(pop_dimension):
     g.write(str(i + 1) + ": ")
     for j in m_prim[i]:
         g.write(str(j))
     u = random.uniform(0, 1)
+    if u < pr:
+        c_nr.append(i)
+        mix.append(m_prim[i])
     g.write(" u=" + str(u) + (("<" + str(pr) + " participa") if u < pr else "") + "\n")
+
+# incrucisare
+crossover(mix, c_nr)
+
+# dupa incrucisare
+g.write("\n\nDupa recombinare:\n")
+j = 0
+for i in c_nr:
+    m_prim[i] = mix[j]
+    j += 1
+display_pop(pop_dimension, m_prim, x_prim, fn_prim)
+
+
+
 
 # daca probabilitatea de selectie p[i] e 0 atunci si q[i] trebuie sa fie 0
 # defapt cred ca nici nu ne trebuie asta ca oricum face >= si < decat acelasi lucru si crapa
