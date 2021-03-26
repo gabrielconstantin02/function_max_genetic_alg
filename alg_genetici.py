@@ -14,49 +14,77 @@ def build_x(chromosome, length, a, b):
     return float((b-a)*x/((2**length)-1)+a)
 
 
+def display_pop(pd, m_tmp, x_tmp, fn_tmp):
+    for i in range(pd):
+        g.write(str(i + 1) + ": ")
+        for j in m_tmp[i]:
+            g.write(str(j))
+        x_tmp[i] = build_x(m_tmp[i], l, d, e)
+        fn_tmp[i] = f(x_tmp[i], a, b, c)
+        g.write(" x= " + str(x_tmp[i]) + " f= " + str(fn_tmp[i]) + "\n")
+
+
+def binary_search(interval, low, high, x):
+    mid = (high + low) // 2
+
+    # daca x-ul se afla in interval, iar acel interval nu e primul (ca sa nu iasa mid-1 = -1)
+    if mid > 0 and interval[mid - 1] <= x < interval[mid]:
+        return mid
+
+    # daca x-ul se afla in primul interval
+    if mid == 0 and x < interval[mid]:
+        return mid
+    
+    if interval[mid] > x:
+        return binary_search(interval, low, mid - 1, x)
+    else:
+        return binary_search(interval, mid + 1, high, x)
+
+
 inp = open("date.txt", "r")
 # dimensiune populatie
 pop_dimension = int(inp.readline())
-print(pop_dimension)
+# print(pop_dimension)
 # domeniu de definitie al functiei
 domain = inp.readline().split()
 d, e = float(domain[0]), float(domain[1])
-print(d, e)
+# print(d, e)
 # parametrii functie de grad 2
 param = inp.readline().split()
 a, b, c = float(param[0]), float(param[1]), float(param[2])
-print(a, b, c)
+# print(a, b, c)
 # precizie
 precision = int(inp.readline())
-print(precision)
+# print(precision)
 # probabilitare recombinare
 pr = float(inp.readline())
-print(pr)
+# print(pr)
 # probabilitate mutatie
 pm = float(inp.readline())
-print(pm)
+# print(pm)
 # nr etape
 nr_e = int(inp.readline())
-print(nr_e)
+# print(nr_e)
 
 inp.close()
 
 # lungime cromozom
 l = math.ceil(math.log((e-d)*(10**precision), 2))
-print(l)
+# print(l)
 
 #ca sa obtin acelasi random -- doar pentru testare
 random.seed(123)
 
 # matrice cu cromozomi generati
 m = [[random.randint(0, 1) for i in range(l)] for j in range(pop_dimension)]
-print(m)
+# for i in range(pop_dimension):
+#     print(m[i])
 
 # test x and f
-temp = [0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,1,1,1,0,0,0,1]
-x=build_x(temp,l,d,e)
-print(build_x(temp,l,d,e))
-print(f(x,a,b,c))
+# temp = [0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,1,1,1,0,0,0,1]
+# x=build_x(temp,l,d,e)
+# print(build_x(temp,l,d,e))
+# print(f(x,a,b,c))
 # end of test
 
 
@@ -65,13 +93,14 @@ x = [0.0 for i in range(pop_dimension)]
 fn = [0.0 for i in range(pop_dimension)]
 g = open("evolutie.txt", "w")
 g.write("Populatia initiala\n")
-for i in range(pop_dimension):
-    g.write(str(i+1)+": ")
-    for j in m[i]:
-        g.write(str(m[i][j]))
-    x[i] = build_x(m[i], l, d, e)
-    fn[i] = f(x[i], a, b, c)
-    g.write(" x= " + str(x[i]) + " f= " + str(fn[i]) + "\n")
+display_pop(pop_dimension, m, x, fn)
+# for i in range(pop_dimension):
+#     g.write(str(i+1)+": ")
+#     for j in m[i]:
+#         g.write(str(j))
+#     x[i] = build_x(m[i], l, d, e)
+#     fn[i] = f(x[i], a, b, c)
+#     g.write(" x= " + str(x[i]) + " f= " + str(fn[i]) + "\n")
 
 
 # probabilitati selectie pentru fiecare cromozom
@@ -85,13 +114,36 @@ for i in range(pop_dimension):
 # intervale de selectie
 q = [0.0 for i in range(pop_dimension)]
 q[0] = p[0]
-for i in range(1,pop_dimension):
+for i in range(1, pop_dimension):
     q[i] = q[i-1]+p[i]
 
 # afisare intervale probabilitati selectie
 g.write("\nIntervale probabilitati selectie\n")
 for i in range(pop_dimension):
     g.write(str(q[i]) + " ")
+
+# generare unui numar aleator u si determinarea intervalului caruia apartine
+m_prim = []  # populatia p'
+for i in range(pop_dimension):
+    u = random.uniform(0, 1)
+    poz = binary_search(q, 0, pop_dimension-1, u)
+    g.write("\nu=" + str(u) + " selectam cromozomul " + str(poz+1))
+    m_prim.append(m[poz])
+
+# dupa selectie avem:
+g.write("\nDupa selectie:\n")
+x_prim = [0.0 for i in range(pop_dimension)]
+fn_prim = [0.0 for i in range(pop_dimension)]
+display_pop(pop_dimension, m_prim, x_prim, fn_prim)
+
+# participanti incrucisare
+g.write("\nProbabilitate de incrucisare " + str(pr) + "\n")
+for i in range(pop_dimension):
+    g.write(str(i + 1) + ": ")
+    for j in m_prim[i]:
+        g.write(str(j))
+    u = random.uniform(0, 1)
+    g.write(" u=" + str(u) + (("<" + str(pr) + " participa") if u < pr else "") + "\n")
 
 # daca probabilitatea de selectie p[i] e 0 atunci si q[i] trebuie sa fie 0
 # defapt cred ca nici nu ne trebuie asta ca oricum face >= si < decat acelasi lucru si crapa
