@@ -2,18 +2,30 @@ import math
 import random
 from decimal import Decimal
 
-
+# functie care calculeaza fitness
 def f(x, a, b, c):
     return a*(x**2)+b*x+c
 
-
+# calcularea lui x din cromozom
 def build_x(chromosome, length, a, b):
     x = 0
     for i in range(length-1, -1, -1):
         x += ((2**i)*chromosome[length-i-1])
     return float((b-a)*x/((2**length)-1)+a)
 
+# functie pentru determinarea indivitului elitist
+def maxi(fct):
+    val = fct[0]
+    poz = 0
+    i = 0
+    for j in fct:
+        if val < j:
+            val = j
+            poz = i
+        i += 1
+    return val, poz
 
+# utilitar pentru afisare
 def display_pop(pd, m_tmp, x_tmp, fn_tmp):
     for i in range(pd):
         g.write(str(i + 1) + ": ")
@@ -23,7 +35,7 @@ def display_pop(pd, m_tmp, x_tmp, fn_tmp):
         fn_tmp[i] = f(x_tmp[i], a, b, c)
         g.write(" x= " + str(x_tmp[i]) + " f= " + str(fn_tmp[i]) + "\n")
 
-
+# cautarea binara a intervalului corespunzator lui u
 def binary_search(interval, low, high, x):
     mid = (high + low) // 2
 
@@ -40,7 +52,7 @@ def binary_search(interval, low, high, x):
     else:
         return binary_search(interval, mid + 1, high, x)
 
-
+# functie pentru incrucisare
 def crossover(chr, ind):
     i = 0
     # facem perechi pana ne raman 2 sau 3 cromozomi
@@ -113,7 +125,7 @@ def crossover(chr, ind):
         for j in chr[i+1]:
             g.write(str(j))
 
-
+# citire date
 inp = open("date.txt", "r")
 # dimensiune populatie
 pop_dimension = int(inp.readline())
@@ -153,13 +165,6 @@ m = [[random.randint(0, 1) for i in range(l)] for j in range(pop_dimension)]
 # for i in range(pop_dimension):
 #     print(m[i])
 
-# test x and f
-# temp = [0,0,0,0,0,1,1,1,0,1,0,0,1,0,0,1,1,1,0,0,0,1]
-# x=build_x(temp,l,d,e)
-# print(build_x(temp,l,d,e))
-# print(f(x,a,b,c))
-# end of test
-
 
 # Afisare populatie initiala
 x = [0.0 for i in range(pop_dimension)]
@@ -167,14 +172,10 @@ fn = [0.0 for i in range(pop_dimension)]
 g = open("evolutie.txt", "w")
 g.write("Populatia initiala\n")
 display_pop(pop_dimension, m, x, fn)
-# for i in range(pop_dimension):
-#     g.write(str(i+1)+": ")
-#     for j in m[i]:
-#         g.write(str(j))
-#     x[i] = build_x(m[i], l, d, e)
-#     fn[i] = f(x[i], a, b, c)
-#     g.write(" x= " + str(x[i]) + " f= " + str(fn[i]) + "\n")
 
+# determinare individ elitist
+val_elite, poz_elite = maxi(fn)
+g.write("\nIndivid elitist: " + str(poz_elite+1) + "\n")
 
 # probabilitati selectie pentru fiecare cromozom
 p = [fn[i]/sum(fn) for i in range(pop_dimension)]
@@ -196,9 +197,9 @@ for i in range(pop_dimension):
     g.write(str(q[i]) + " ")
 
 # generare unui numar aleator u si determinarea intervalului caruia apartine
-# TODO: nu uita sa implementezi selectia elitista (alegi doar pop_dimension-1 aici)
-m_prim = []  # populatia p'
-for i in range(pop_dimension):
+# pe prima pozitie vom pastra individul elitist
+m_prim = [m[poz_elite]]  # populatia p'
+for i in range(pop_dimension-1):
     u = random.uniform(0, 1)
     poz = binary_search(q, 0, pop_dimension-1, u)
     g.write("\nu=" + str(u) + " selectam cromozomul " + str(poz+1))
@@ -214,7 +215,7 @@ display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 g.write("\nProbabilitate de incrucisare " + str(pr) + "\n")
 mix = [] # lista de cromozomi care intra la incrucisare
 c_nr = [] # indicele "original" al cromozomilor
-for i in range(pop_dimension):
+for i in range(1, pop_dimension):
     g.write(str(i + 1) + ": ")
     for j in m_prim[i]:
         g.write(str(j))
@@ -238,7 +239,7 @@ display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 # mutatie
 g.write("\nProbabilitatea de mutatie pentru fiecare gena " + str(pm))
 g.write("\nAu fost modificati cromozomii:")
-for i in range(pop_dimension):
+for i in range(1, pop_dimension):
     u = random.uniform(0, 1)
     if i < pm:
         g.write("\n" + str(i+1))
