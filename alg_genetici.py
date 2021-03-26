@@ -235,7 +235,17 @@ for i in c_nr:
     j += 1
 display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 
-
+# mutatie
+g.write("\nProbabilitatea de mutatie pentru fiecare gena " + str(pm))
+g.write("\nAu fost modificati cromozomii:")
+for i in range(pop_dimension):
+    u = random.uniform(0, 1)
+    if i < pm:
+        g.write("\n" + str(i+1))
+        poz_elem = random.randint(0, l - 1)
+        m_prim[i][poz_elem] = 1 if m_prim[i][poz_elem] == 0 else 0
+g.write("\nDupa mutatie:\n")
+display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 
 
 # daca probabilitatea de selectie p[i] e 0 atunci si q[i] trebuie sa fie 0
