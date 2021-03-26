@@ -1,10 +1,11 @@
 import math
 import random
-from decimal import Decimal
+
 
 # functie care calculeaza fitness
 def f(x, a, b, c):
     return a*(x**2)+b*x+c
+
 
 # calcularea lui x din cromozom
 def build_x(chromosome, length, a, b):
@@ -12,6 +13,7 @@ def build_x(chromosome, length, a, b):
     for i in range(length-1, -1, -1):
         x += ((2**i)*chromosome[length-i-1])
     return float((b-a)*x/((2**length)-1)+a)
+
 
 # functie pentru determinarea indivitului elitist
 def maxi(fct):
@@ -25,15 +27,18 @@ def maxi(fct):
         i += 1
     return val, poz
 
-# utilitar pentru afisare
-def display_pop(pd, m_tmp, x_tmp, fn_tmp):
+
+# functie utilitar de calculare fiecare x si f si afisare
+def display_pop(pd, m_tmp, x_tmp, fn_tmp, verbose=True):
     for i in range(pd):
-        g.write(str(i + 1) + ": ")
-        for j in m_tmp[i]:
-            g.write(str(j))
+        if verbose:
+            g.write(str(i + 1) + ": ")
+            for j in m_tmp[i]:
+                g.write(str(j))
         x_tmp[i] = build_x(m_tmp[i], l, d, e)
         fn_tmp[i] = f(x_tmp[i], a, b, c)
-        g.write(" x= " + str(x_tmp[i]) + " f= " + str(fn_tmp[i]) + "\n")
+        if verbose:
+            g.write(" x= " + str(x_tmp[i]) + " f= " + str(fn_tmp[i]) + "\n")
 
 # cautarea binara a intervalului corespunzator lui u
 def binary_search(interval, low, high, x):
@@ -52,78 +57,86 @@ def binary_search(interval, low, high, x):
     else:
         return binary_search(interval, mid + 1, high, x)
 
+
 # functie pentru incrucisare
-def crossover(chr, ind):
+def crossover(chr, ind, verbose=True):
     i = 0
-    # facem perechi pana ne raman 2 sau 3 cromozomi
-    while i + 3 < len(chr):
+    # daca avem macar 2 cromozomi
+    if len(chr) > 1:
+        # facem perechi pana ne raman 2 sau 3 cromozomi
+        while i + 3 < len(chr):
+            break_point = random.randint(0, l - 1)
+            if verbose:
+                g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
+                for j in chr[i]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+1]:
+                    g.write(str(j))
+                g.write(" punct " + str(break_point) + "\n")
+            # print(chr[i], chr[i+1])
+            tmp = chr[i][:break_point]
+            chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
+            chr[i+1] = tmp + chr[i+1][break_point:]
+            if verbose:
+                g.write("Rezultat     ")
+                for j in chr[i]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+1]:
+                    g.write(str(j))
+            # print(chr[i], chr[i+1])
+            i += 2
         break_point = random.randint(0, l - 1)
-        g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
-        for j in chr[i]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+1]:
-            g.write(str(j))
-        g.write(" punct " + str(break_point) + "\n")
-        # print(chr[i], chr[i+1])
-        tmp = chr[i][:break_point]
-        chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
-        chr[i+1] = tmp + chr[i+1][break_point:]
-        g.write("Rezultat     ")
-        for j in chr[i]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+1]:
-            g.write(str(j))
-        # print(chr[i], chr[i+1])
-        i += 2
-    #print("\n")
-    break_point = random.randint(0, l - 1)
-    if i + 3 == len(chr):
-        # print(chr[i], chr[i+1], chr[i+2])
-        g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + " si cromozomul " + str(ind[i+2]+1) + ":\n")
-        for j in chr[i]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+1]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+2]:
-            g.write(str(j))
-        g.write(" punct " + str(break_point) + "\n")
-        tmp = chr[i][:break_point]
-        chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
-        chr[i+1] = chr[i+2][:break_point] + chr[i+1][break_point:]
-        chr[i+2] = tmp + chr[i+2][break_point:]
-        # print(chr[i], chr[i+1], chr[i+2])
-        g.write("Rezultat     ")
-        for j in chr[i]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+1]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+2]:
-            g.write(str(j))
-    else:
-        # print(chr[i], chr[i+1])
-        g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
-        for j in chr[i]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+1]:
-            g.write(str(j))
-        g.write(" punct " + str(break_point) + "\n")
-        tmp = chr[i][:break_point]
-        chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
-        chr[i+1] = tmp + chr[i+1][break_point:]
-        # print(chr[i], chr[i+1])
-        g.write("Rezultat     ")
-        for j in chr[i]:
-            g.write(str(j))
-        g.write(" ")
-        for j in chr[i+1]:
-            g.write(str(j))
+        if i + 3 == len(chr):
+            # print(chr[i], chr[i+1], chr[i+2])
+            if verbose:
+                g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + " si cromozomul " + str(ind[i+2]+1) + ":\n")
+                for j in chr[i]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+1]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+2]:
+                    g.write(str(j))
+                g.write(" punct " + str(break_point) + "\n")
+            tmp = chr[i][:break_point]
+            chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
+            chr[i+1] = chr[i+2][:break_point] + chr[i+1][break_point:]
+            chr[i+2] = tmp + chr[i+2][break_point:]
+            # print(chr[i], chr[i+1], chr[i+2])
+            if verbose:
+                g.write("Rezultat     ")
+                for j in chr[i]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+1]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+2]:
+                    g.write(str(j))
+        else:
+            # print(chr[i], chr[i+1])
+            if verbose:
+                g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
+                for j in chr[i]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+1]:
+                    g.write(str(j))
+                g.write(" punct " + str(break_point) + "\n")
+            tmp = chr[i][:break_point]
+            chr[i] = chr[i+1][:break_point] + chr[i][break_point:]
+            chr[i+1] = tmp + chr[i+1][break_point:]
+            # print(chr[i], chr[i+1])
+            if verbose:
+                g.write("Rezultat     ")
+                for j in chr[i]:
+                    g.write(str(j))
+                g.write(" ")
+                for j in chr[i+1]:
+                    g.write(str(j))
 
 # citire date
 inp = open("date.txt", "r")
@@ -248,11 +261,71 @@ for i in range(1, pop_dimension):
 g.write("\nDupa mutatie:\n")
 display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 
+# evolutie
+g.write("\nEvolutie:")
+for gen in range(1, nr_e):
+    # Actualizare valori pentru fiecare generatie
+    m = m_prim
+    x = x_prim
+    fn = fn_prim
 
-# daca probabilitatea de selectie p[i] e 0 atunci si q[i] trebuie sa fie 0
-# defapt cred ca nici nu ne trebuie asta ca oricum face >= si < decat acelasi lucru si crapa
-# for i in range(pop_dimension):
-#    if p[i] == 0:
-#        q[i] = 0
-# print(q)
+    # determinare individ elitist
+    val_elite, poz_elite = maxi(fn)
+
+    # probabilitati selectie pentru fiecare cromozom
+    p = [fn[i]/sum(fn) for i in range(pop_dimension)]
+
+    # intervale de selectie
+    q = [0.0 for i in range(pop_dimension)]
+    q[0] = p[0]
+    for i in range(1, pop_dimension):
+        q[i] = q[i-1]+p[i]
+
+    # generare unui numar aleator u si determinarea intervalului caruia apartine
+    # pe prima pozitie vom pastra individul elitist
+    m_prim = [m[poz_elite]]  # populatia p'
+    for i in range(pop_dimension-1):
+        u = random.uniform(0, 1)
+        poz = binary_search(q, 0, pop_dimension-1, u)
+        m_prim.append(m[poz])
+
+    # dupa selectie avem:
+    x_prim = [0.0 for i in range(pop_dimension)]
+    fn_prim = [0.0 for i in range(pop_dimension)]
+    display_pop(pop_dimension, m_prim, x_prim, fn_prim, False)
+
+    # participanti incrucisare
+    mix = [] # lista de cromozomi care intra la incrucisare
+    c_nr = [] # indicele "original" al cromozomilor
+    for i in range(1, pop_dimension):
+        u = random.uniform(0, 1)
+        if u < pr:
+            c_nr.append(i)
+            mix.append(m_prim[i])
+
+    # incrucisare
+    crossover(mix, c_nr, False)
+
+    # dupa incrucisare
+    j = 0
+    for i in c_nr:
+        m_prim[i] = mix[j]
+        j += 1
+    display_pop(pop_dimension, m_prim, x_prim, fn_prim, False)
+
+    # mutatie
+    for i in range(1, pop_dimension):
+        u = random.uniform(0, 1)
+        if i < pm:
+            poz_elem = random.randint(0, l - 1)
+            m_prim[i][poz_elem] = 1 if m_prim[i][poz_elem] == 0 else 0
+    display_pop(pop_dimension, m_prim, x_prim, fn_prim, False)
+
+    # valuarea maxima
+    max_f, temp = maxi(fn_prim)
+    # valuarea medie a performantei
+    vmp = 0
+    for i in range(pop_dimension):
+        vmp += fn_prim[i]
+    g.write("\nValoare maxima: " + str(max_f) + "     Valoarea medie a performantei: " + str(vmp/pop_dimension))
 g.close()

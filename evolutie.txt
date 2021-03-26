@@ -163,3 +163,54 @@ Dupa mutatie:
 18: 0110000001111101110101 x= 0.13076022404676046 f= 2.1136619878540013
 19: 0110000001111101110101 x= 0.13076022404676046 f= 2.1136619878540013
 20: 1000000100101001110110 x= 0.5136345657431043 f= 2.249814098616997
+
+Evolutie:
+Valoare maxima: 2.2498209582083653     Valoarea medie a performantei: 2.0850143826847245
+Valoare maxima: 2.2498209582083653     Valoarea medie a performantei: 2.183418158669352
+Valoare maxima: 2.2498209582083653     Valoarea medie a performantei: 2.1998585829494575
+Valoare maxima: 2.2498209582083653     Valoarea medie a performantei: 2.2060065991323996
+Valoare maxima: 2.2498209582083653     Valoarea medie a performantei: 2.196025915769171
+Valoare maxima: 2.2499668187889146     Valoarea medie a performantei: 2.2204317416966743
+Valoare maxima: 2.2499668187889146     Valoarea medie a performantei: 2.2365104189558482
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2296898744938796
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2498495219067793
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2498784056910632
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2498969585030055
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249893432515932
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249873220345031
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2498837201532025
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499020191089256
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249951245323368
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249970255008698
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249972788485006
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499742798857705
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499742644306573
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499837420569104
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249983181216462
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249985709750545
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249996141065786
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499967241199252
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499969980658623
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970563504035
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499972216843416
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499972100274332
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997198370525
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997198370525
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499971983705245
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499971750567083
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499971750567083
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499971750567083
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499971633998004
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997116772168
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997128429076
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.24999710511526
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997070144535
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970351738106
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970468307184
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997023516902
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997011859994
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970235169022
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970468307184
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.249997023516902
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970235169022
+Valoare maxima: 2.2499972333412495     Valoarea medie a performantei: 2.2499970468307184
