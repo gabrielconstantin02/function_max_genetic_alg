@@ -1,6 +1,7 @@
 import math
 import random
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # functie care calculeaza fitness
 def f(x, a, b, c):
@@ -40,6 +41,7 @@ def display_pop(pd, m_tmp, x_tmp, fn_tmp, verbose=True):
         if verbose:
             g.write(" x= " + str(x_tmp[i]) + " f= " + str(fn_tmp[i]) + "\n")
 
+
 # cautarea binara a intervalului corespunzator lui u
 def binary_search(interval, low, high, x):
     mid = (high + low) // 2
@@ -65,6 +67,7 @@ def crossover(chr, ind, verbose=True):
     if len(chr) > 1:
         # facem perechi pana ne raman 2 sau 3 cromozomi
         while i + 3 < len(chr):
+            # punct de rupere
             break_point = random.randint(0, l - 1)
             if verbose:
                 g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
@@ -88,6 +91,7 @@ def crossover(chr, ind, verbose=True):
             # print(chr[i], chr[i+1])
             i += 2
         break_point = random.randint(0, l - 1)
+        # daca ne-au ramas 3 cromozomi necombinanti, ii combinam ciclic
         if i + 3 == len(chr):
             # print(chr[i], chr[i+1], chr[i+2])
             if verbose:
@@ -117,6 +121,7 @@ def crossover(chr, ind, verbose=True):
                 for j in chr[i+2]:
                     g.write(str(j))
         else:
+            # daca sunt 2 cromozomi ii facem pereche
             # print(chr[i], chr[i+1])
             if verbose:
                 g.write("\nRecombinare dintre cromozomul " + str(ind[i]+1) + " cu cromozomul " + str(ind[i+1]+1) + ":\n")
@@ -170,8 +175,8 @@ inp.close()
 l = math.ceil(math.log((e-d)*(10**precision), 2))
 # print(l)
 
-#ca sa obtin acelasi random -- doar pentru testare
-random.seed(123)
+# ca sa obtin acelasi random -- doar pentru testare
+# random.seed(123)
 
 # matrice cu cromozomi generati
 m = [[random.randint(0, 1) for i in range(l)] for j in range(pop_dimension)]
@@ -189,6 +194,7 @@ display_pop(pop_dimension, m, x, fn)
 # determinare individ elitist
 val_elite, poz_elite = maxi(fn)
 g.write("\nIndivid elitist: " + str(poz_elite+1) + "\n")
+elite = m[poz_elite][:]
 
 # probabilitati selectie pentru fiecare cromozom
 p = [fn[i]/sum(fn) for i in range(pop_dimension)]
@@ -211,7 +217,8 @@ for i in range(pop_dimension):
 
 # generare unui numar aleator u si determinarea intervalului caruia apartine
 # pe prima pozitie vom pastra individul elitist
-m_prim = [m[poz_elite]]  # populatia p'
+m_prim = []  # populatia p'
+m_prim.append(elite)
 for i in range(pop_dimension-1):
     u = random.uniform(0, 1)
     poz = binary_search(q, 0, pop_dimension-1, u)
@@ -254,13 +261,18 @@ g.write("\nProbabilitatea de mutatie pentru fiecare gena " + str(pm))
 g.write("\nAu fost modificati cromozomii:")
 for i in range(1, pop_dimension):
     u = random.uniform(0, 1)
-    if i < pm:
+    if u < pm:
         g.write("\n" + str(i+1))
         poz_elem = random.randint(0, l - 1)
+        # calculam complementul
         m_prim[i][poz_elem] = 1 if m_prim[i][poz_elem] == 0 else 0
 g.write("\nDupa mutatie:\n")
 display_pop(pop_dimension, m_prim, x_prim, fn_prim)
 
+
+# salvarea datelor pentru plotare
+l_maxi = []
+l_vmp = []
 # evolutie
 g.write("\nEvolutie:")
 for gen in range(1, nr_e):
@@ -271,7 +283,7 @@ for gen in range(1, nr_e):
 
     # determinare individ elitist
     val_elite, poz_elite = maxi(fn)
-
+    elite = m[poz_elite][:]
     # probabilitati selectie pentru fiecare cromozom
     p = [fn[i]/sum(fn) for i in range(pop_dimension)]
 
@@ -283,7 +295,8 @@ for gen in range(1, nr_e):
 
     # generare unui numar aleator u si determinarea intervalului caruia apartine
     # pe prima pozitie vom pastra individul elitist
-    m_prim = [m[poz_elite]]  # populatia p'
+    m_prim = []  # populatia p'
+    m_prim.append(elite)
     for i in range(pop_dimension-1):
         u = random.uniform(0, 1)
         poz = binary_search(q, 0, pop_dimension-1, u)
@@ -305,22 +318,19 @@ for gen in range(1, nr_e):
 
     # incrucisare
     crossover(mix, c_nr, False)
-
     # dupa incrucisare
     j = 0
     for i in c_nr:
         m_prim[i] = mix[j]
         j += 1
     display_pop(pop_dimension, m_prim, x_prim, fn_prim, False)
-
     # mutatie
     for i in range(1, pop_dimension):
         u = random.uniform(0, 1)
-        if i < pm:
+        if u < pm:
             poz_elem = random.randint(0, l - 1)
             m_prim[i][poz_elem] = 1 if m_prim[i][poz_elem] == 0 else 0
     display_pop(pop_dimension, m_prim, x_prim, fn_prim, False)
-
     # valuarea maxima
     max_f, temp = maxi(fn_prim)
     # valuarea medie a performantei
@@ -328,4 +338,16 @@ for gen in range(1, nr_e):
     for i in range(pop_dimension):
         vmp += fn_prim[i]
     g.write("\nValoare maxima: " + str(max_f) + "     Valoarea medie a performantei: " + str(vmp/pop_dimension))
+    l_maxi.append(max_f)
+    l_vmp.append(vmp/pop_dimension)
 g.close()
+
+# interfata grafica cu evolutia algoritmului
+sns.lineplot(data=l_maxi, label="Valoarea maxima")
+plt.ylabel('Valoare')
+plt.show()
+plt.clf()
+sns.lineplot(data=l_vmp, label="Valoarea medie a performantei")
+plt.ylabel('Valoare')
+plt.show()
+
